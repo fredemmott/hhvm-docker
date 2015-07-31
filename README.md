@@ -104,6 +104,8 @@ fredemmott/hhvm-proxygen   3.8.0               78844bf6551e        43 hours ago 
 fredemmott/hhvm            3.8.0               53363d5764e8        2 days ago          470.9 MB
 ```
 
+Check for typos, and make sure that the IDs and timestamps for 'latest' and the new version match.
+
 Push To DockerHub
 -----------------
 

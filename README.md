@@ -1,100 +1,135 @@
-HHVM is installed and running as a web server (via Proxygen).
+This repository contains the sources for the following docker hub images:
 
- - it listens on port 80
- - both the default document and 404 document are `index.php`
- - it expects your site to be in `/var/www/public`
- - additional ini settings can be specified by replacing `/etc/hhvm/site.ini`
+ - [fredemmott/hhvm](https://registry.hub.docker.com/u/fredemmott/hhvm/)
+ - [fredemmott/hhvm-proxygen](https://registry.hub.docker.com/u/fredemmott/hhvm-proxygen/)
 
-Development Usage
-================
+Building A New Version
+======================
 
-```
-$ cd mysite
-# with a randomly assigned port...
-$ docker run --name=my_container -v $(pwd):/var/www/public -d -P fredemmott/hhvm-proxygen:latest
-$ docker port my_container 80 # to find out what port was allocated
-# ... or, on port 12345
-$ docker run --name=my_container -v $(pwd):/var/www/public -d -p 12345:80 fredemmott/hhvm-proxygen:latest
-```
+When a new version of HHVM is released:
 
-Production Usage
-==============
+Change The fredemmott/hhvm Version Number
+-----------------------------------------
 
-I recommend building your own Docker image derived from this by specifying a new Dockerfile:
+For example, for 3.8.0 => 3.8.1:
 
-```
-FROM fredemmott/hhvm-proxygen:latest
-
-RUN apt-get update -y
-RUN apt-get install -y curl
-# Install composer
-RUN mkdir /opt/composer
-RUN curl -sS https://getcomposer.org/installer | hhvm --php -- --install-dir=/opt/composer
-
-# Install app
-RUN rm -rf /var/www/public
-ADD . /var/www/public
-RUN cd /var/www/public && hhvm /opt/composer/composer.phar install
-
-# Reconfigure HHVM
-ADD hhvm.prod.ini /etc/hhvm/site.ini
-
-EXPOSE 80
+```diff
+diff --git a/hhvm-latest/Dockerfile b/hhvm-latest/Dockerfile
+index 185d896..17644e0 100644
+--- a/hhvm-latest/Dockerfile
++++ b/hhvm-latest/Dockerfile
+@@ -4,4 +4,4 @@ RUN apt-get update -y
+ RUN apt-get install -y software-properties-common
+ RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7
+ RUN add-apt-repository "deb http://dl.hhvm.com/ubuntu trusty main"
+-RUN apt-get update -y && apt-get install -y hhvm=3.8.0~trusty
++RUN apt-get update -y && apt-get install -y hhvm=3.8.1~trusty
 ```
 
-Deploy the image with your preferred hosting solution; this has been tested with AWS Elastic Beanstalk - simply `eb config; eb init; eb create; eb deploy` (see http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-getting-started.html)
+Build And Tag fredemmott/hhvm
+-----------------------------
 
-Warning: If you are using AWS Elastic Beanstalk to build and deploy the images, it will build your images on the same instances used for serving the site. While a t1.micro is sufficient for running the image, it is not sufficient for both running and building an image: it's typical for even 'apt-get update' to run out of memory.
-
-Disabling The Typechecker
--------------------------------
-
-HHVM automatically runs the typechecker - this is useful in development, but assuming you have it running in your development workflow and in your CI system, there is not much additional benefit to running it in production, and the increased memory usage can be costly in production. To disable it, add the following to `/etc/hhvm/site.ini`:
+The ID will not match; be sure to tag your new image ID instead of copying
+the one in this example.
 
 ```
-hhvm.hack.lang.auto_typecheck=0
-hhvm.hack.lang.look_for_typechecker=0
+$ docker build hhvm-latest/
+...
+Successfully built ba93944aeef2
+$ docker tag ba93944aeef2 fredemmott/hhvm:latest
+$ docker tag ba93944aeef2 fredemmott/hhvm:3.8.1
 ```
 
-Error Logs
-========
+Change The fredemmott/hhvm-proxy Version Number
+-----------------------------------------------
 
-Errors are written to `stderr`, so can be accessed with `docker logs my-container`, or `docker logs -f my_container` to keep watching.
+```diff
+diff --git a/hhvm-latest-proxygen/Dockerfile b/hhvm-latest-proxygen/Dockerfile
+index b632379..a6aa0ee 100644
+--- a/hhvm-latest-proxygen/Dockerfile
++++ b/hhvm-latest-proxygen/Dockerfile
+@@ -1,4 +1,4 @@
+-FROM fredemmott/hhvm:3.8.0
++FROM fredemmott/hhvm:3.8.1
 
-Versions/Tags
-===========
+ RUN mkdir -p /var/www/public
+```
 
-- specific versions of HHVM are tagged, eg `3.8.0`.
-- `latest` points at the latest stable release
-- additional tags will be added for future LTS releases of HHVM with Proxygen support, eg `3.9-lts-latest`
-
-About /var/www/public
-==================
-
-Most popular projects have `index.php` in the top level of their source tree, so should be deployed to `/var/www/public` - unfortunately, this is generally considered bad practice nowadays because having the root of your webapp publically accessible makes it very easy to
-accidentally make things public that you do not mean to - for example, configuration files with database credentials, or your .git directory.
-
-If you are working on a new project, consider a structure like:
+Build And Tag fredemmott/hhvm-proxygen
+--------------------------------------
 
 ```
-myapp/composer.json
-myapp/composer.lock
-myapp/vendor/
-myapp/public/index.php
-myapp/src/ # if you don't like PSR-4
-myapp/mynamespace/mysubnamespace/ # if you do like PSR-4
-````
+$ docker build hhvm-latest-proxygen/
+Sending build context to Docker daemon 3.584 kB
+Sending build context to Docker daemon
+Step 0 : FROM fredemmott/hhvm:3.8.1
+ ---> ba93944aeef2
+...
+Successfully built b85395df4dc7
+$ docker tag b85395df4dc7 fredemmott/hhvm-proxygen:latest
+$ docker tag b85395df4dc7 fredemmott/hhvm-proxygen:3.8.1
+```
 
-Then map `myapp/` to `/var/www` instead of `/var/www/public`.
+Test
+----
 
-If you agree in principle but dislike the name, you can override the `hhvm.server.source_root` path in `/etc/hhvm/site.ini` in your container.
+Test with an arbitrary website. If you have a site with `index.php` in the root:
 
-But I Want FastCGI!
------------------------
+```
+~/mysite$ docker run --name=3.8.1_test -v $(pwd):/var/www/public -d -P fredemmott/hhvm-proxygen:latest
+e6e108f83a7421d6163c27d70bcd0ea7a801546a555e503f1bbb9c055377df87
+~/mysite$ docker port 3.8.1_test 80
+0.0.0.0:49153
+```
 
-Sorry, not yet; I hope to add this soon as `fredemmott/hhvm-fastcgi`.
+Then run your test suite against the port that docker gives you - http://localhost:49153 for the example above.
 
-Source Please
-============
+To clean up your tests:
 
-https://github.com/fredemmott/hhvm-docker
+```
+$ docker stop 3.8.1_test
+$ docker rm 3.8.1_test
+```
+
+Sanity-Check
+------------
+
+```
+$ docker images | grep fredemmott/hhvm
+fredemmott/hhvm-proxygen   3.8.1               b85395df4dc7        12 minutes ago      469.9 MB
+fredemmott/hhvm-proxygen   latest              b85395df4dc7        12 minutes ago      469.9 MB
+fredemmott/hhvm            3.8.1               ba93944aeef2        16 minutes ago      469.9 MB
+fredemmott/hhvm            latest              ba93944aeef2        16 minutes ago      469.9 MB
+fredemmott/hhvm-proxygen   3.8.0               78844bf6551e        43 hours ago        470.9 MB
+fredemmott/hhvm            3.8.0               53363d5764e8        2 days ago          470.9 MB
+```
+
+Push To DockerHub
+-----------------
+
+```
+$ docker push fredemmott/hhvm
+The push refers to a repository [fredemmott/hhvm] (len: 3)
+Sending image list
+Pushing repository fredemmott/hhvm (3 tags)
+...
+ba93944aeef2: Image successfully pushed
+Pushing tag for rev [ba93944aeef2] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm/tags/3.8.1}
+Pushing tag for rev [ba93944aeef2] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm/tags/latest}
+$ docker push fredemmott/hhvm-proxygen
+The push refers to a repository [fredemmott/hhvm-proxygen] (len: 3)
+Sending image list
+Pushing repository fredemmott/hhvm-proxygen (3 tags)
+...
+b85395df4dc7: Image successfully pushed
+Pushing tag for rev [b85395df4dc7] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm-proxygen/tags/3.8.1}
+Pushing tag for rev [b85395df4dc7] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm-proxygen/tags/latest}
+```
+
+Push Updated Sources
+--------------------
+
+```
+$ git commit -m 'v3.8.1'
+$ git push
+```

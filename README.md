@@ -40,8 +40,8 @@ $ docker tag ba93944aeef2 fredemmott/hhvm:latest
 $ docker tag ba93944aeef2 fredemmott/hhvm:3.8.1
 ```
 
-Change The fredemmott/hhvm-proxy Version Number
------------------------------------------------
+Change The fredemmott/hhvm-proxygen Version Number
+--------------------------------------------------
 
 ```diff
 diff --git a/hhvm-latest-proxygen/Dockerfile b/hhvm-latest-proxygen/Dockerfile

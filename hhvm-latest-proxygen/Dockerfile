@@ -1,4 +1,4 @@
-FROM fredemmott/hhvm:3.8.0
+FROM fredemmott/hhvm:3.8.1
 
 RUN mkdir -p /var/www/public
 

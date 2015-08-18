@@ -40,6 +40,12 @@ $ docker tag ba93944aeef2 fredemmott/hhvm:latest
 $ docker tag ba93944aeef2 fredemmott/hhvm:3.8.1
 ```
 
+If this is an LTS release, also tag x.y-lts-latest, eg:
+
+```
+$ docker tag 8fa8a82a5f51 fredemmott/hhvm:3.9-lts-latest
+```
+
 Change The fredemmott/hhvm-proxygen Version Number
 --------------------------------------------------
 
@@ -68,6 +74,12 @@ Step 0 : FROM fredemmott/hhvm:3.8.1
 Successfully built b85395df4dc7
 $ docker tag b85395df4dc7 fredemmott/hhvm-proxygen:latest
 $ docker tag b85395df4dc7 fredemmott/hhvm-proxygen:3.8.1
+```
+
+If this is an LTS release, also tag x.y-lts-latest, eg:
+
+```
+$ docker tag 29d782b1b052 fredemmott/hhvm-proxygen:3.9-lts-latest
 ```
 
 Test

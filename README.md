@@ -8,6 +8,16 @@ Building A New Version
 
 When a new version of HHVM is released:
 
+Update The Base Image
+---------------------
+
+This is built on top of `ubuntu:14.04`, so make sure you're building against
+the latest version of that:
+
+```
+$ docker pull ubuntu:14.04
+```
+
 Change The fredemmott/hhvm Version Number
 -----------------------------------------
 

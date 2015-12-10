@@ -1,4 +1,4 @@
-FROM hhvm/hhvm:3.10.1
+FROM hhvm/hhvm:3.11.0
 
 RUN mkdir -p /var/www/public
 

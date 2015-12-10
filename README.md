@@ -1,7 +1,7 @@
 This repository contains the sources for the following docker hub images:
 
- - [fredemmott/hhvm](https://registry.hub.docker.com/u/fredemmott/hhvm/)
- - [fredemmott/hhvm-proxygen](https://registry.hub.docker.com/u/fredemmott/hhvm-proxygen/)
+ - [hhvm/hhvm](https://registry.hub.docker.com/u/hhvm/hhvm/)
+ - [hhvm/hhvm-proxygen](https://registry.hub.docker.com/u/hhvm/hhvm-proxygen/)
 
 Building A New Version
 ======================
@@ -18,7 +18,7 @@ the latest version of that:
 $ docker pull ubuntu:14.04
 ```
 
-Change The fredemmott/hhvm Version Number
+Change The hhvm/hhvm Version Number
 -----------------------------------------
 
 For example, for 3.8.0 => 3.8.1:
@@ -36,7 +36,7 @@ index 185d896..17644e0 100644
 +RUN apt-get update -y && apt-get install -y hhvm=3.8.1~trusty
 ```
 
-Build And Tag fredemmott/hhvm
+Build And Tag hhvm/hhvm
 -----------------------------
 
 The ID will not match; be sure to tag your new image ID instead of copying
@@ -46,17 +46,17 @@ the one in this example.
 $ docker build hhvm-latest/
 ...
 Successfully built ba93944aeef2
-$ docker tag ba93944aeef2 fredemmott/hhvm:latest
-$ docker tag ba93944aeef2 fredemmott/hhvm:3.8.1
+$ docker tag ba93944aeef2 hhvm/hhvm:latest
+$ docker tag ba93944aeef2 hhvm/hhvm:3.8.1
 ```
 
 If this is an LTS release, also tag x.y-lts-latest, eg:
 
 ```
-$ docker tag 8fa8a82a5f51 fredemmott/hhvm:3.9-lts-latest
+$ docker tag 8fa8a82a5f51 hhvm/hhvm:3.9-lts-latest
 ```
 
-Change The fredemmott/hhvm-proxygen Version Number
+Change The hhvm/hhvm-proxygen Version Number
 --------------------------------------------------
 
 ```diff
@@ -65,31 +65,31 @@ index b632379..a6aa0ee 100644
 --- a/hhvm-latest-proxygen/Dockerfile
 +++ b/hhvm-latest-proxygen/Dockerfile
 @@ -1,4 +1,4 @@
--FROM fredemmott/hhvm:3.8.0
-+FROM fredemmott/hhvm:3.8.1
+-FROM hhvm/hhvm:3.8.0
++FROM hhvm/hhvm:3.8.1
 
  RUN mkdir -p /var/www/public
 ```
 
-Build And Tag fredemmott/hhvm-proxygen
+Build And Tag hhvm/hhvm-proxygen
 --------------------------------------
 
 ```
 $ docker build hhvm-latest-proxygen/
 Sending build context to Docker daemon 3.584 kB
 Sending build context to Docker daemon
-Step 0 : FROM fredemmott/hhvm:3.8.1
+Step 0 : FROM hhvm/hhvm:3.8.1
  ---> ba93944aeef2
 ...
 Successfully built b85395df4dc7
-$ docker tag b85395df4dc7 fredemmott/hhvm-proxygen:latest
-$ docker tag b85395df4dc7 fredemmott/hhvm-proxygen:3.8.1
+$ docker tag b85395df4dc7 hhvm/hhvm-proxygen:latest
+$ docker tag b85395df4dc7 hhvm/hhvm-proxygen:3.8.1
 ```
 
 If this is an LTS release, also tag x.y-lts-latest, eg:
 
 ```
-$ docker tag 29d782b1b052 fredemmott/hhvm-proxygen:3.9-lts-latest
+$ docker tag 29d782b1b052 hhvm/hhvm-proxygen:3.9-lts-latest
 ```
 
 Test
@@ -98,7 +98,7 @@ Test
 Test with an arbitrary website. If you have a site with `index.php` in the root:
 
 ```
-~/mysite$ docker run --name=3.8.1_test -v $(pwd):/var/www/public -d -P fredemmott/hhvm-proxygen:latest
+~/mysite$ docker run --name=3.8.1_test -v $(pwd):/var/www/public -d -P hhvm/hhvm-proxygen:latest
 e6e108f83a7421d6163c27d70bcd0ea7a801546a555e503f1bbb9c055377df87
 ~/mysite$ docker port 3.8.1_test 80
 0.0.0.0:49153
@@ -117,13 +117,13 @@ Sanity-Check
 ------------
 
 ```
-$ docker images | grep fredemmott/hhvm
-fredemmott/hhvm-proxygen   3.8.1               b85395df4dc7        12 minutes ago      469.9 MB
-fredemmott/hhvm-proxygen   latest              b85395df4dc7        12 minutes ago      469.9 MB
-fredemmott/hhvm            3.8.1               ba93944aeef2        16 minutes ago      469.9 MB
-fredemmott/hhvm            latest              ba93944aeef2        16 minutes ago      469.9 MB
-fredemmott/hhvm-proxygen   3.8.0               78844bf6551e        43 hours ago        470.9 MB
-fredemmott/hhvm            3.8.0               53363d5764e8        2 days ago          470.9 MB
+$ docker images | grep hhvm/hhvm
+hhvm/hhvm-proxygen   3.8.1               b85395df4dc7        12 minutes ago      469.9 MB
+hhvm/hhvm-proxygen   latest              b85395df4dc7        12 minutes ago      469.9 MB
+hhvm/hhvm            3.8.1               ba93944aeef2        16 minutes ago      469.9 MB
+hhvm/hhvm            latest              ba93944aeef2        16 minutes ago      469.9 MB
+hhvm/hhvm-proxygen   3.8.0               78844bf6551e        43 hours ago        470.9 MB
+hhvm/hhvm            3.8.0               53363d5764e8        2 days ago          470.9 MB
 ```
 
 Check for typos, and make sure that the IDs and timestamps for 'latest' and the new version match.
@@ -132,22 +132,22 @@ Push To DockerHub
 -----------------
 
 ```
-$ docker push fredemmott/hhvm
-The push refers to a repository [fredemmott/hhvm] (len: 3)
+$ docker push hhvm/hhvm
+The push refers to a repository [hhvm/hhvm] (len: 3)
 Sending image list
-Pushing repository fredemmott/hhvm (3 tags)
+Pushing repository hhvm/hhvm (3 tags)
 ...
 ba93944aeef2: Image successfully pushed
-Pushing tag for rev [ba93944aeef2] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm/tags/3.8.1}
-Pushing tag for rev [ba93944aeef2] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm/tags/latest}
-$ docker push fredemmott/hhvm-proxygen
-The push refers to a repository [fredemmott/hhvm-proxygen] (len: 3)
+Pushing tag for rev [ba93944aeef2] on {https://cdn-registry-1.docker.io/v1/repositories/hhvm/hhvm/tags/3.8.1}
+Pushing tag for rev [ba93944aeef2] on {https://cdn-registry-1.docker.io/v1/repositories/hhvm/hhvm/tags/latest}
+$ docker push hhvm/hhvm-proxygen
+The push refers to a repository [hhvm/hhvm-proxygen] (len: 3)
 Sending image list
-Pushing repository fredemmott/hhvm-proxygen (3 tags)
+Pushing repository hhvm/hhvm-proxygen (3 tags)
 ...
 b85395df4dc7: Image successfully pushed
-Pushing tag for rev [b85395df4dc7] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm-proxygen/tags/3.8.1}
-Pushing tag for rev [b85395df4dc7] on {https://cdn-registry-1.docker.io/v1/repositories/fredemmott/hhvm-proxygen/tags/latest}
+Pushing tag for rev [b85395df4dc7] on {https://cdn-registry-1.docker.io/v1/repositories/hhvm/hhvm-proxygen/tags/3.8.1}
+Pushing tag for rev [b85395df4dc7] on {https://cdn-registry-1.docker.io/v1/repositories/hhvm/hhvm-proxygen/tags/latest}
 ```
 
 Push Updated Sources

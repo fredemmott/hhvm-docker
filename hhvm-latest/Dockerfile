@@ -4,6 +4,6 @@ RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e728
 RUN apt-get update -y && apt-get install -y software-properties-common \
   && add-apt-repository "deb http://dl.hhvm.com/ubuntu trusty main" \
   && apt-get update -y \
-  && apt-get install -y hhvm=3.15.1~trusty \
+  && apt-get install -y hhvm=3.15.3~trusty \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*

@@ -18,6 +18,8 @@ if echo "$VERSION" | egrep -q '^\d{4}\.\d{2}\.\d{2}$'; then
 else
   NIGHTLY=false
   HHVM_PACKAGE="hhvm=${VERSION}-*"
+  MAJ_MIN=$(echo "$VERSION" | cut -f1,2 -d.)
+  (git checkout "${MAJ_MIN}-lts" || git checkout "$MAJ_MIN" || true) 2>/dev/null
 fi
 
 docker build \

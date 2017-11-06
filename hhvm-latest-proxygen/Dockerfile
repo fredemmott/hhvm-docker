@@ -1,4 +1,5 @@
-FROM hhvm/hhvm:latest
+ARG HHVM_BASE_IMAGE
+FROM ${HHVM_BASE_IMAGE}
 
 RUN mkdir -p /var/www/public
 

@@ -1,9 +1,14 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
-RUN apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7a449
-RUN apt-get update -y && apt-get install -y software-properties-common \
-  && add-apt-repository "deb http://dl.hhvm.com/ubuntu trusty main" \
+ARG HHVM_PACKAGE
+ENV HHVM_DISABLE_NUMA true
+
+RUN \
+  apt-get update -y && apt-get install -y software-properties-common \
+  && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7a449 \
+  && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xB4112585D386EB94 \
+  && add-apt-repository "deb http://dl2.hhvm.com/ubuntu xenial main" \
   && apt-get update -y \
-  && apt-get install -y hhvm=3.17.0~trusty \
+  && apt-get install -y ${HHVM_PACKAGE} \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*

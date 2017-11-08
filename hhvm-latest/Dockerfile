@@ -7,7 +7,7 @@ RUN \
   apt-get update -y && apt-get install -y software-properties-common \
   && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7a449 \
   && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xB4112585D386EB94 \
-  && add-apt-repository "deb http://dl2.hhvm.com/ubuntu xenial main" \
+  && add-apt-repository "deb https://s3-us-west-2.amazonaws.com/hhvm-downloads/ubuntu xenial main" \
   && apt-get update -y \
   && apt-get install -y ${HHVM_PACKAGE} git wget curl \
   && apt-get clean \

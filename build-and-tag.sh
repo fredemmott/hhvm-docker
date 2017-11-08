@@ -12,7 +12,13 @@ set -ex
 VERSION="${1:-"$(date +%Y.%m.%d)"}"
 cd "$(dirname "$0")"
 
-if echo "$VERSION" | grep -Pq '^\d{4}\.\d{2}\.\d{2}$'; then
+if [ $(uname -s) == "Darwin" ]; then
+  GREP=egrep
+else
+  GREP="grep -P"
+fi
+
+if echo "$VERSION" | $GREP -q '^\d{4}\.\d{2}\.\d{2}$'; then
   NIGHTLY=true
   HHVM_PACKAGE="hhvm-nightly=${VERSION}-*"
 else

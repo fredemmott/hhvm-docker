@@ -4,7 +4,7 @@ ARG HHVM_PACKAGE
 ENV HHVM_DISABLE_NUMA true
 
 RUN \
-  apt-get update -y && apt-get install -y software-properties-common \
+  apt-get update -y && apt-get install -y software-properties-common apt-transport-https \
   && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7a449 \
   && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xB4112585D386EB94 \
   && add-apt-repository "deb https://s3-us-west-2.amazonaws.com/hhvm-downloads/ubuntu xenial main" \

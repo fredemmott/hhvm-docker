@@ -38,10 +38,14 @@ docker build \
   -t "hhvm/hhvm-proxygen:$VERSION" \
   hhvm-latest-proxygen/
 
-if $NIGHTLY; then
-  docker tag "hhvm/hhvm:$VERSION" hhvm/hhvm:nightly
-  docker tag "hhvm/hhvm-proxygen:$VERSION" hhvm/hhvm-proxygen:nightly
+docker push hhvm/hhvm:$VERSION
+docker push hhvm/hhvm-proxygen:$VERSION
+
+if ! $NIGHTLY; then
+  exit
 fi
 
-docker push hhvm/hhvm
-docker push hhvm/hhvm-proxygen
+docker tag "hhvm/hhvm:$VERSION" hhvm/hhvm:nightly
+docker tag "hhvm/hhvm-proxygen:$VERSION" hhvm/hhvm-proxygen:nightly
+docker push hhvm/hhvm:nightly
+docker push hhvm/hhvm-proxygen:nightly

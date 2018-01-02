@@ -19,10 +19,8 @@ else
 fi
 
 if echo "$VERSION" | $GREP -q '^\d{4}\.\d{2}\.\d{2}$'; then
-  NIGHTLY=true
   HHVM_PACKAGE="hhvm-nightly=${VERSION}-*"
 else
-  NIGHTLY=false
   HHVM_PACKAGE="hhvm=${VERSION}-*"
   MAJ_MIN=$(echo "$VERSION" | cut -f1,2 -d.)
   (git checkout "${MAJ_MIN}-lts" || git checkout "$MAJ_MIN" || true) 2>/dev/null
@@ -40,12 +38,3 @@ docker build \
 
 docker push hhvm/hhvm:$VERSION
 docker push hhvm/hhvm-proxygen:$VERSION
-
-if ! $NIGHTLY; then
-  exit
-fi
-
-docker tag "hhvm/hhvm:$VERSION" hhvm/hhvm:nightly
-docker tag "hhvm/hhvm-proxygen:$VERSION" hhvm/hhvm-proxygen:nightly
-docker push hhvm/hhvm:nightly
-docker push hhvm/hhvm-proxygen:nightly

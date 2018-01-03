@@ -38,3 +38,10 @@ docker build \
 
 docker push hhvm/hhvm:$VERSION
 docker push hhvm/hhvm-proxygen:$VERSION
+
+for TAG in $(<EXTRA_TAGS); do
+  docker tag "hhvm/hhvm:$VERSION" "hhvm/hhvm:$TAG"
+  docker tag "hhvm/hhvm-proxygen:$VERSION" "hhvm/hhvm-proxygen:$TAG"
+  docker push "hhvm/hhvm:$TAG"
+  docker push "hhvm/hhvm-proxygen:$TAG"
+done

@@ -13,4 +13,4 @@ RUN \
   && apt-get install -y ${HHVM_PACKAGE} git wget curl \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && sed -i 's,s3-us-west-2.amazonaws.com/hhvm-downloads/,dl2.hhvm.com/,' /etc/apt/sources.list
+  && sed -i 's,s3-us-west-2.amazonaws.com/hhvm-downloads/,dl.hhvm.com/,' /etc/apt/sources.list

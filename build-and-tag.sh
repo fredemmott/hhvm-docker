@@ -29,7 +29,7 @@ else
   else
     HHVM_REPO_DISTRO="bionic-${MAJ_MIN}"
   fi
-  (git checkout "${MAJ_MIN}-lts" || git checkout "$MAJ_MIN" || true) 2>/dev/null
+  git checkout "origin/HHVM-$MAJ_MIN" 2>/dev/null
 fi
 
 docker build \
